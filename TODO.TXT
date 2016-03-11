@@ -1,0 +1,8 @@
+confirmar antes de fechar a pagina caso hajam alterações
+confirmar antes de fechar modal ('esc key') caso hajam alterações
+preencher nome de conteúdo automaticamente (banner, html, image, etc)
+Salvar conteúdo ativo por padrão?
+pre-setar tipo de arquivo 'banner' para imagem, não flash
+copiar conteúdo entre controllers
+corrigir bug do popup que abre fora da tela - ou remover essa caixa e colocar apenas uma mensagem
+desativar os multiplos popups de confirmacao quando se salvam varios arquivos

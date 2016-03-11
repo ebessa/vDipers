@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+
+  "name": "Vtex Dipers",
+  "description": "keep track of current folder/page in the vtex admin",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_title": "Vtex Dipers",
+    "default_icon": "img/diper.png"
+  },
+
+  "icons":{
+    "16": "img/diper16.png",
+    "48": "img/diper48.png",
+    "128": "img/diper128.png"
+  },
+
+  "permissions": [
+    "webRequest",
+    "tabs",
+    "*://*.vtexcommercestable.com.br/admin/a/"
+  ],
+
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.vtexcommercestable.com.br/admin/a/"],
+      "js": [
+        "js/jquery.js",
+        "js/app.js"
+      ]
+    }
+  ]
+}
