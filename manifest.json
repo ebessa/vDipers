@@ -19,7 +19,7 @@
   "permissions": [
     "webRequest",
     "tabs",
-    "*://*.vtexcommercestable.com.br/admin/a/"
+    "*://*.vtexcommercestable.com.br/admin/a"
   ],
 
   "background": {
@@ -28,7 +28,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.vtexcommercestable.com.br/admin/a/"],
+      "matches": ["*://*.vtexcommercestable.com.br/admin/a*"],
       "js": [
         "js/jquery.js",
         "js/app.js"
