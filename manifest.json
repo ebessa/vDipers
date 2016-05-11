@@ -22,16 +22,17 @@
     "*://*.vtexcommercestable.com.br/admin/a"
   ],
 
-  "background": {
-    "scripts": ["js/background.js"]
-  },
+  "web_accessible_resources": [
+    "js/app.js"
+  ],
 
   "content_scripts": [
     {
       "matches": ["*://*.vtexcommercestable.com.br/admin/a*"],
+      "css": [ "css/style.css" ],
       "js": [
         "js/jquery.js",
-        "js/app.js"
+        "js/init.js"
       ]
     }
   ]

@@ -2,8 +2,6 @@ try{
   var menuIddle = true;
   var count = 0;
 
-  console.log('roooooodei');
-
   function followHash(){
     var currentPath = window.location.hash.split('/');
 
@@ -32,6 +30,17 @@ try{
           }
         }, 100);
     });
+  }
+
+  function appendHtmlMessage(){
+    var html = [
+      '<div class="ext-message-box">',
+      '<span class="btn-close">X</span>',
+      '<p></p>',
+      '</div>'
+    ].join('');
+
+    $('body').append(html);
   }
 
   function clickListener(){
@@ -75,20 +84,60 @@ try{
       clearTimeout(timeout);
 
       $('.vtex-portal-main .jqueryFileTree')
-      .on('DOMNodeInserted', clickListener);
+        .on('DOMNodeInserted', clickListener);
 
-      // $('.vtex-portal-main .jqueryFileTree')
-      // .addClass('tree-holder')
-      // .addClass('ext-level-0');
-
+      followHash();
       clickListener();
     }
   }
 
-  readyState();
-  followHash();
+  var vtexOverwrite = {
+    init: function(){
+      vtexOverwrite._msgBox = $('.ext-message-box');
+      vtexOverwrite._msgBox.find('span').on('click', vtexOverwrite._hideMessage);
+    },
 
-  $(window).on('hashchange', followHash);// isso só será disparado quando o usuario clicar no "back" button
+    _hideMessage: function(){
+      vtexOverwrite._msgBox.animate({
+        opacity: 0,
+        bottom: '-100%'
+      }, 400);
+    },
+
+    _showMessage: function(){
+      vtexOverwrite._msgBox.animate({
+        opacity: 1,
+        bottom: '20px'
+      }, 400);
+    },
+
+    ShowMessage: function(message){
+
+      vtexOverwrite._hideMessage();
+
+      vtexOverwrite._msgBox.find('p').text(message);
+
+      vtexOverwrite._showMessage();
+
+      setTimeout(vtexOverwrite._hideMessage, 10000);
+    }
+  };
+
+  function readyScript(e){
+    if(typeof ShowMessage === "undefined"){
+      setTimeout(readyScript, 200);
+      return true;
+    }
+
+    vtexOverwrite.init();
+    ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
+  }
+
+  appendHtmlMessage();
+  readyScript();
+  readyState();
+
+  $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
 } catch(e){
   console.error('Erro na extensão:', e);
 }
