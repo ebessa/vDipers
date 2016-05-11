@@ -39,22 +39,27 @@ try{
 
     $('.vtex-portal-main a')
     .unbind('click.extension')
-    .on('click.extension', function(e){console.log('click.extension');
+    .on('click.extension', function(e){
       var len = $(this).parents('ul').length,
           urlTable = [];
 
-      $(this).closest('.jqueryFileTree')
-      .attr('ext-path', '/' + this.text.replace(/^\/$/gi, 'slash'))
-      .addClass('tree-holder')
-      .addClass('ext-level-' + (parseInt(len, 10)-1));
+      $(this).attr('ext-path', '/' + this.text.replace(/^\/$/gi, 'slash'))
+        .addClass('tree-name')
+        .parents('.jqueryFileTree')
+        .addClass('tree-holder');
+
+      urlTable.push($(this).attr('ext-path'));
 
       $(this).parents('.tree-holder').each(function(i,el){
-        console.log("$(el).attr('ext-path')", $(el).attr('ext-path'))
-        urlTable.push($(el).attr('ext-path'));
+        var text = $(this).prev('a');
+
+        if(text.attr('ext-path')){
+          urlTable.push(text.attr('ext-path'));
+        }
       });
 
       url = urlTable.reverse().join('');
-      history.pushState({}, url,'#'+url);
+      history.pushState({}, url,'#/'+url);
     });
   }
 
@@ -72,9 +77,9 @@ try{
       $('.vtex-portal-main .jqueryFileTree')
       .on('DOMNodeInserted', clickListener);
 
-      $('.vtex-portal-main .jqueryFileTree')
-      .addClass('tree-holder')
-      .addClass('ext-level-0');
+      // $('.vtex-portal-main .jqueryFileTree')
+      // .addClass('tree-holder')
+      // .addClass('ext-level-0');
 
       clickListener();
     }
