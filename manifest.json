@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Vtex Dipers",
-  "description": "keep track of current folder/page in the vtex admin",
+  "description": "control the poop flow",
   "version": "1.0",
 
   "browser_action": {
