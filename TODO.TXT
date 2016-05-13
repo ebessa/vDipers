@@ -4,6 +4,7 @@ preencher nome de conteúdo automaticamente (banner, html, image, etc)
 Salvar conteúdo ativo por padrão?
 pre-setar tipo de arquivo 'banner' para imagem, não flash
 copiar conteúdo entre controllers
+verificar se o usuario vai perder o login ou alterar a cookie para não expirar
 
 Doing:
 desativar os multiplos popups de confirmacao quando se salvam varios arquivos
