@@ -10,4 +10,5 @@ desativar os multiplos popups de confirmacao quando se salvam varios arquivos
 
 
 Done:
+Guardar caminho da navegação na URL
 corrigir bug do popup que abre fora da tela - ou remover essa caixa e colocar apenas uma mensagem

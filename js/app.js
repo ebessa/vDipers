@@ -12,7 +12,10 @@ try{
           if(menuIddle){
 
             var clickable = $('.jqueryFileTree a').filter(function(){
-              return this.text === a.replace(/slash/, '/');
+              return this.text === a.replace(/slash/, '/')
+                                    .replace(/lt/, '<')
+                                    .replace(/%20/g, ' ')
+                                    .replace(/gt/, '>')
             });
 
             if(clickable.length === 1){
@@ -62,13 +65,17 @@ try{
       $(this).parents('.tree-holder').each(function(i,el){
         var text = $(this).prev('a');
 
+
         if(text.attr('ext-path')){
           urlTable.push(text.attr('ext-path'));
         }
       });
 
       url = urlTable.reverse().join('');
-      history.pushState({}, url,'#/'+url);
+      url = url.replace(/</, 'lt')
+              .replace(/\s/g, '%20')
+              .replace(/>/, 'gt');
+      history.pushState({}, url,'#'+url);
     });
   }
 
@@ -97,6 +104,8 @@ try{
       vtexOverwrite._msgBox.find('span').on('click', vtexOverwrite._hideMessage);
     },
 
+    _lastMessage: '',
+
     _hideMessage: function(){
       vtexOverwrite._msgBox.animate({
         opacity: 0,
@@ -113,13 +122,17 @@ try{
 
     ShowMessage: function(message){
 
-      vtexOverwrite._hideMessage();
+      if(vtexOverwrite._lastMessage !== message){
+        vtexOverwrite._hideMessage();
 
-      vtexOverwrite._msgBox.find('p').text(message);
+        vtexOverwrite._msgBox.find('p').text(message);
 
-      vtexOverwrite._showMessage();
+        vtexOverwrite._showMessage();
 
-      setTimeout(vtexOverwrite._hideMessage, 10000);
+        setTimeout(vtexOverwrite._hideMessage, 10000);
+
+        vtexOverwrite._lastMessage = message;
+      }
     }
   };
 
