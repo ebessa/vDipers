@@ -2,7 +2,7 @@ try{
   var menuIddle = true;
   var count = 0;
 
-  function followHash(){
+  function followHash(){console.log('followHash');
     var currentPath = window.location.hash.split('/');
 
     currentPath.shift(); // remove #
@@ -21,14 +21,12 @@ try{
             if(clickable.length === 1){
                 menuIddle = false;
                 clickable.parent().on('DOMNodeInserted', function(){
-                menuIddle = true;
-                clearInterval(clickInterval);
-                // console.log('DOMNodeInserted');
-                // console.warn('interValCleared');
-              });
+                  menuIddle = true;
+                  clearInterval(clickInterval);
+                });
 
               clickable[0].click();// click nativo DOM. Click de jquery não funciona
-              location.href="javascript:HideBusy(); void 0";//gambiarra pra executar função da vtex
+              HideBusy(); // função vtex
             }
           }
         }, 100);
@@ -88,8 +86,6 @@ try{
       },200);
       return;
     } else {
-      clearTimeout(timeout);
-
       $('.vtex-portal-main .jqueryFileTree')
         .on('DOMNodeInserted', clickListener);
 
@@ -100,38 +96,38 @@ try{
 
   var vtexOverwrite = {
     init: function(){
-      vtexOverwrite._msgBox = $('.ext-message-box');
-      vtexOverwrite._msgBox.find('span').on('click', vtexOverwrite._hideMessage);
+      this._msgBox = $('.ext-message-box');
+      this._msgBox.find('span').on('click', this._hideMessage);
     },
 
     _lastMessage: '',
 
     _hideMessage: function(){
-      vtexOverwrite._msgBox.animate({
+      this._msgBox.animate({
         opacity: 0,
         bottom: '-100%'
       }, 400);
     },
 
     _showMessage: function(){
-      vtexOverwrite._msgBox.animate({
+      this._msgBox.animate({
         opacity: 1,
         bottom: '20px'
       }, 400);
     },
 
-    ShowMessage: function(message){
+    ShowMessage: function(message){ console.info('new message');
 
-      if(vtexOverwrite._lastMessage !== message){
-        vtexOverwrite._hideMessage();
+      if(this._lastMessage !== message){
+        this._hideMessage();
 
-        vtexOverwrite._msgBox.find('p').text(message);
+        this._msgBox.find('p').text(message);
 
-        vtexOverwrite._showMessage();
+        this._showMessage();
 
-        setTimeout(vtexOverwrite._hideMessage, 10000);
+        setTimeout(this._hideMessage, 10000);
 
-        vtexOverwrite._lastMessage = message;
+        this._lastMessage = message;
       }
     }
   };
@@ -144,13 +140,24 @@ try{
 
     vtexOverwrite.init();
     ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
+
+    var hasMessage = setInterval(function(){
+      console.info('hasMessage interval');
+      if(!ShowMessage){
+        clearInterval(hasMessage);
+        console.warn('\n\n\nnão tem ShowMessage\n\n\n');
+      }
+    },3000);
   }
 
   appendHtmlMessage();
   readyScript();
   readyState();
 
-  $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
+  $(window).on('hashchange', function(){
+    console.log('hashchange');
+    followHash()
+  }); // isso só será disparado quando o usuario clicar no "back" button
 } catch(e){
   console.error('Erro na extensão:', e);
 }
