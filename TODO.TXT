@@ -6,6 +6,7 @@ pre-setar tipo de arquivo 'banner' para imagem, não flash
 copiar conteúdo entre controllers
 verificar se o usuario vai perder o login ou alterar a cookie para não expirar
 não deixar a pagina recarregar quando aperta 'enter' na hora de dar nome para um controle novo
+opção para salvar por x tempo copia do arquivo a ser substituido
 
 Doing:
 desativar os multiplos popups de confirmacao quando se salvam varios arquivos
