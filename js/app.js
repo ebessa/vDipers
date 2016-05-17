@@ -2,7 +2,7 @@ try{
   var menuIddle = true;
   var count = 0;
 
-  function followHash(){console.log('followHash');
+  function followHash(){
     var currentPath = window.location.hash.split('/');
 
     currentPath.shift(); // remove #
@@ -41,7 +41,11 @@ try{
       '</div>'
     ].join('');
 
-    $('body').append(html);
+    $('body')
+            .find('.ext-message-box')
+            .remove()
+            .end()
+            .append(html);
   }
 
   function clickListener(){
@@ -95,67 +99,52 @@ try{
   }
 
   var vtexOverwrite = {
-    init: function(){
-      this._msgBox = $('.ext-message-box');
-      this._msgBox.find('span').on('click', this._hideMessage);
-    },
-
     _lastMessage: '',
 
     _hideMessage: function(){
-      this._msgBox.animate({
+      $('.ext-message-box').animate({
         opacity: 0,
         bottom: '-100%'
       }, 400);
     },
 
     _showMessage: function(){
-      this._msgBox.animate({
+      $('.ext-message-box').animate({
         opacity: 1,
         bottom: '20px'
       }, 400);
     },
 
-    ShowMessage: function(message){ console.info('new message');
+    ShowMessage: function(message){
+      appendHtmlMessage();
 
-      if(this._lastMessage !== message){
-        this._hideMessage();
+      if(vtexOverwrite._lastMessage !== message){
+        vtexOverwrite._hideMessage();
 
-        this._msgBox.find('p').text(message);
+        $('.ext-message-box').find('p').text(message);
 
-        this._showMessage();
+        vtexOverwrite._showMessage();
 
-        setTimeout(this._hideMessage, 10000);
+        setTimeout(vtexOverwrite._hideMessage, 10000);
 
-        this._lastMessage = message;
+        vtexOverwrite._lastMessage = message;
       }
     }
   };
 
-  function readyScript(e){
+  function readyScript(e){ // esperando script vtex carregar
     if(typeof ShowMessage === "undefined"){
       setTimeout(readyScript, 200);
       return true;
     }
 
-    vtexOverwrite.init();
     ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
-
-    var hasMessage = setInterval(function(){
-      console.info('hasMessage interval');
-      if(!ShowMessage){
-        clearInterval(hasMessage);
-        console.warn('\n\n\nnão tem ShowMessage\n\n\n');
-      }
-    },3000);
   }
 
-  appendHtmlMessage();
   readyScript();
   readyState();
 
   $(window).on('hashchange', function(){
-    console.log('hashchange');
     followHash()
   }); // isso só será disparado quando o usuario clicar no "back" button
 } catch(e){
