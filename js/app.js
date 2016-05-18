@@ -2,35 +2,54 @@ try{
   var menuIddle = true;
   var count = 0;
 
-  function followHash(){
-    var currentPath = window.location.hash.split('/');
+  var domPath = (function(){
+    var timeout;
 
-    currentPath.shift(); // remove #
-
-    currentPath.forEach(function(a, i){
-        var clickInterval = setInterval(function () {
-          if(menuIddle){
-
-            var clickable = $('.jqueryFileTree a').filter(function(){
-              return this.text === a.replace(/slash/, '/')
-                                    .replace(/lt/, '<')
-                                    .replace(/%20/g, ' ')
-                                    .replace(/gt/, '>')
-            });
-
-            if(clickable.length === 1){
-                menuIddle = false;
-                clickable.parent().on('DOMNodeInserted', function(){
-                  menuIddle = true;
-                  clearInterval(clickInterval);
-                });
-
-              clickable[0].click();// click nativo DOM. Click de jquery não funciona
-              HideBusy(); // função vtex
-            }
+    return function(pathList, clickable){//console.log('domPath');
+      if(timeout) clearTimeout(timeout);
+      timeout = setTimeout(function(){
+          if(pathList.length){
+            setPaths(pathList);
+            HideBusy(); // função vtex
+          } else { // terminou de abrir url
+            clickListener();
           }
-        }, 100);
-    });
+      });
+    }
+  }());
+
+  function setPaths(pathList) {
+    var currentPath = pathList.shift(); // remove item e ja colocado no menu
+
+
+    var clickable = $('.jqueryFileTree a').filter(function(){
+                      return this.text === currentPath.replace(/slash/, '/')
+                                            .replace(/lt/, '<')
+                                            .replace(/%20/g, ' ')
+                                            .replace(/gt/, '>')
+                    });
+
+
+    if(clickable.length === 1){
+      clickable.parent().off('DOMNodeInserted').on('DOMNodeInserted', function(){
+        domPath(pathList, clickable[0]);
+        setMenu(clickable[0]);
+      });
+
+      clickable[0].click();// click nativo DOM. Click de jquery não funciona
+    }
+  }
+
+  function followHash(){
+    var pathList = window.location.hash.split('/'),
+        clickable;
+
+    pathList.shift(); // remove #
+    if(pathList.length){
+      setPaths(pathList);
+    } else {
+      clickListener();
+    }
   }
 
   function appendHtmlMessage(){
@@ -48,55 +67,52 @@ try{
             .append(html);
   }
 
-  function clickListener(){
-    var url;
-
-    $('.vtex-portal-main a')
-    .unbind('click.extension')
-    .on('click.extension', function(e){
-      var len = $(this).parents('ul').length,
-          urlTable = [];
-
-      $(this).attr('ext-path', '/' + this.text.replace(/^\/$/gi, 'slash'))
-        .addClass('tree-name')
-        .parents('.jqueryFileTree')
-        .addClass('tree-holder');
-
-      urlTable.push($(this).attr('ext-path'));
-
-      $(this).parents('.tree-holder').each(function(i,el){
-        var text = $(this).prev('a');
-
-
-        if(text.attr('ext-path')){
-          urlTable.push(text.attr('ext-path'));
-        }
-      });
-
-      url = urlTable.reverse().join('');
-      url = url.replace(/</, 'lt')
-              .replace(/\s/g, '%20')
-              .replace(/>/, 'gt');
-      history.pushState({}, url,'#'+url);
-    });
+  function setMenu(that){//console.log('setMenu', $(that));
+    $(that).attr('ext-path', '/' + that.text.replace(/^\/$/gi, 'slash'))
+      .addClass('tree-name')
+      .parents('.jqueryFileTree')
+      .addClass('tree-holder');
   }
 
-
-  function readyState(){
+  var clickListener = function(){
     var timeout;
-    if($('.vtex-portal-main a').length === 0){
-      timeout = setTimeout(function(){
-        readyState();
-      },200);
-      return;
-    } else {
-      $('.vtex-portal-main .jqueryFileTree')
-        .on('DOMNodeInserted', clickListener);
 
-      followHash();
-      clickListener();
+    return function(){
+      if(timeout) clearTimeout(timeout);
+      timeout = setTimeout(function(){//console.log('clickListener',$('.vtex-portal-main a'));
+          var url;
+
+          $('.vtex-portal-main a')
+          .off('click.extension')
+          .on('click.extension', function(e){
+              var len = $(this).parents('ul').length,
+                  urlTable = [];
+
+              setMenu(this);
+
+              urlTable.push($(this).attr('ext-path'));
+
+              $(this).parents('.tree-holder').each(function(i,el){
+                var text = $(this).prev('a');
+
+                if(text.attr('ext-path')){
+                  urlTable.push(text.attr('ext-path'));
+                }
+              });
+
+
+              url = urlTable.reverse().join('');
+              url = url.replace(/</, 'lt')
+                      .replace(/\s/g, '%20')
+                      .replace(/>/, 'gt');
+
+              history.pushState({}, url,'#'+url);
+        });
+
+              $('.vtex-portal-main .jqueryFileTree').off('DOMNodeInserted').on('DOMNodeInserted', clickListener);
+      },250);
     }
-  }
+  }();
 
   var vtexOverwrite = {
     _lastMessage: '',
@@ -132,17 +148,21 @@ try{
     }
   };
 
-  function readyScript(e){ // esperando script vtex carregar
-    if(typeof ShowMessage === "undefined"){
-      setTimeout(readyScript, 200);
-      return true;
+
+  var readyState = (function (){
+    var timeout;
+    if($('.vtex-portal-main a').length === 0 || typeof ShowMessage === "undefined"){
+      timeout = setTimeout(function(){
+        readyState();
+      },200);
+      return;
+    } else {
+      ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
+
+      clearTimeout(timeout);
+      followHash();
     }
-
-    ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
-  }
-
-  readyScript();
-  readyState();
+  }());
 
   $(window).on('hashchange', function(){
     followHash()
