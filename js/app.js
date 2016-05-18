@@ -23,10 +23,7 @@ try{
 
 
     var clickable = $('.jqueryFileTree a').filter(function(){
-                      return this.text === currentPath.replace(/slash/, '/')
-                                            .replace(/lt/, '<')
-                                            .replace(/%20/g, ' ')
-                                            .replace(/gt/, '>')
+                      return this.text === decodeURI(currentPath).replace(/slash/, '/');
                     });
 
 
@@ -102,9 +99,7 @@ try{
 
 
               url = urlTable.reverse().join('');
-              url = url.replace(/</, 'lt')
-                      .replace(/\s/g, '%20')
-                      .replace(/>/, 'gt');
+              url = encodeURI(url);
 
               history.pushState({}, url,'#'+url);
         });
