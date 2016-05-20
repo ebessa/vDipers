@@ -5,7 +5,7 @@ try{
   var domPath = (function(){
     var timeout;
 
-    return function(pathList, clickable){//console.log('domPath');
+    return function(pathList, clickable){
       if(timeout) clearTimeout(timeout);
       timeout = setTimeout(function(){
           if(pathList.length){
@@ -64,7 +64,7 @@ try{
             .append(html);
   }
 
-  function setMenu(that){//console.log('setMenu', $(that));
+  function setMenu(that){
     $(that).attr('ext-path', '/' + that.text.replace(/^\/$/gi, 'slash'))
       .addClass('tree-name')
       .parents('.jqueryFileTree')
@@ -76,7 +76,7 @@ try{
 
     return function(){
       if(timeout) clearTimeout(timeout);
-      timeout = setTimeout(function(){//console.log('clickListener',$('.vtex-portal-main a'));
+      timeout = setTimeout(function(){
           var url;
 
           $('.vtex-portal-main a')
@@ -144,20 +144,23 @@ try{
   };
 
 
-  var readyState = (function (){
+  function readyState (){
     var timeout;
-    if($('.vtex-portal-main a').length === 0 || typeof ShowMessage === "undefined"){
-      timeout = setTimeout(function(){
-        readyState();
-      },200);
-      return;
-    } else {
-      ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
+    return function(){
+      if($('.vtex-portal-main a').length === 0 || typeof ShowMessage === "undefined"){
+        timeout = setTimeout(function(){
+          readyState();
+        },200);
+      } else {
+        ShowMessage = vtexOverwrite.ShowMessage; // esta função é originalmente definida no arquivo PortalManagementMain.js
 
-      clearTimeout(timeout);
-      followHash();
-    }
-  }());
+        clearTimeout(timeout);
+        followHash();
+      }
+    }()
+  };
+
+  readyState();
 
   $(window).on('hashchange', function(){
     followHash()
