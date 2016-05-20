@@ -23,12 +23,7 @@
   ],
 
   "web_accessible_resources": [
-    "js/app.js",
-    "js/jquery.fileupload.js",
-    "js/jquery.fileupload-process.js",
-    "js/jquery.fileupload-image.js",
-    "js/jquery.fileupload-audio.js",
-    "js/jquery.fileupload-validate.js"
+    "js/app.js"
   ],
 
   "content_scripts": [
@@ -36,6 +31,7 @@
       "matches": ["*://*.vtexcommercestable.com.br/admin/a*"],
       "css": [ "css/style.css" ],
       "js": [
+        "js/jquery.js",
         "js/init.js"
       ]
     }

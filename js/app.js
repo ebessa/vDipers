@@ -162,9 +162,14 @@ try{
 
   readyState();
 
-  $(window).on('hashchange', function(){
-    followHash()
-  }); // isso só será disparado quando o usuario clicar no "back" button
+  $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
+
+  $(document).on('click', function(e){
+    var links = {"Adicionar": 1, "Alterar": 1};
+    if( $(e.target).text() in links){
+      console.log('SIMMM');
+    }
+  });
 } catch(e){
   console.error('Erro na extensão:', e);
 }
