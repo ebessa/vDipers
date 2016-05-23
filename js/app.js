@@ -126,10 +126,22 @@ try{
       }, 400);
     },
 
-    ShowMessage: function(message){
-      appendHtmlMessage();
+    getLastMessage: function(){
+      return vtexOverwrite._lastMessage;
+    },
 
-      if(vtexOverwrite._lastMessage !== message){
+    setLastMessage: function(message){
+      vtexOverwrite._lastMessage = message;
+
+      setTimeout(function(){
+        vtexOverwrite._lastMessage = '';
+      },2000);
+    },
+
+    ShowMessage: function(message){
+      if(vtexOverwrite.getLastMessage() !== message){
+        appendHtmlMessage();
+
         vtexOverwrite._hideMessage();
 
         $('.ext-message-box').find('p').text(message);
@@ -138,7 +150,7 @@ try{
 
         setTimeout(vtexOverwrite._hideMessage, 10000);
 
-        vtexOverwrite._lastMessage = message;
+        vtexOverwrite.setLastMessage(message);
       }
     }
   };
@@ -185,6 +197,10 @@ try{
   readyState();
 
   $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
+
+  $(document).on('click', '.ext-message-box .btn-close',function(){ // fecha o box de mensagem
+    vtexOverwrite._hideMessage();
+  });
 
   // $(document).on('click', function(e){
   //   var links = {"Adicionar": 1, "Alterar": 1},
