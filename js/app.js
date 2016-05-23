@@ -143,6 +143,28 @@ try{
     }
   };
 
+  function replaceUpload(){
+    console.log('replaceUpload');
+    $('#fileInputFilePickerUploader').remove();
+
+    $('#fileInputFilePicker').attr('multiple',true).show().fileupload({
+        dataType: 'json',
+        add: function (e, data) {
+          console.log('e',e);
+          console.log('data',data);
+            // data.context = $('<button/>').text('Upload')
+            //     .appendTo(document.body)
+            //     .click(function () {
+            //         data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+            //         data.submit();
+            //     });
+        },
+        done: function (e, data) {
+            data.context.text('Upload finished.');
+        }
+    });
+  }
+
 
   function readyState (){
     var timeout;
@@ -165,9 +187,15 @@ try{
   $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
 
   $(document).on('click', function(e){
-    var links = {"Adicionar": 1, "Alterar": 1};
+    var links = {"Adicionar": 1, "Alterar": 1},
+        interval = null;
     if( $(e.target).text() in links){
-      console.log('SIMMM');
+      interval = setInterval(function () {
+        if($('#fileInputFilePickerUploader').length > 0){
+          clearInterval(interval);
+          replaceUpload();
+        }
+      }, 100);
     }
   });
 } catch(e){
