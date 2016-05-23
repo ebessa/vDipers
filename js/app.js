@@ -28,9 +28,9 @@ try{
 
 
     if(clickable.length === 1){
+      setMenu(clickable[0]);
       clickable.parent().off('DOMNodeInserted').on('DOMNodeInserted', function(){
         domPath(pathList, clickable[0]);
-        setMenu(clickable[0]);
       });
 
       clickable[0].click();// click nativo DOM. Click de jquery não funciona
@@ -186,18 +186,18 @@ try{
 
   $(window).on('hashchange', followHash); // isso só será disparado quando o usuario clicar no "back" button
 
-  $(document).on('click', function(e){
-    var links = {"Adicionar": 1, "Alterar": 1},
-        interval = null;
-    if( $(e.target).text() in links){
-      interval = setInterval(function () {
-        if($('#fileInputFilePickerUploader').length > 0){
-          clearInterval(interval);
-          replaceUpload();
-        }
-      }, 100);
-    }
-  });
+  // $(document).on('click', function(e){
+  //   var links = {"Adicionar": 1, "Alterar": 1},
+  //       interval = null;
+  //   if( $(e.target).text() in links){
+  //     interval = setInterval(function () {
+  //       if($('#fileInputFilePickerUploader').length > 0){
+  //         clearInterval(interval);
+  //         replaceUpload();
+  //       }
+  //     }, 100);
+  //   }
+  // });
 } catch(e){
   console.error('Erro na extensão:', e);
 }
